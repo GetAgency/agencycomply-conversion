@@ -1,0 +1,62 @@
+/* Mobile Navigation Fix
+ * Fixes hamburger menu visibility at tablet/mobile viewports
+ * for static Webflow export
+ */
+
+/* Show hamburger button at tablet and below (991px) */
+@media screen and (max-width: 991px) {
+  /* Ensure the nav button (hamburger) is visible */
+  .w-nav[data-collapse="medium"] .w-nav-button,
+  .nav_button.w-nav-button {
+    display: block !important;
+  }
+  
+  /* Hide desktop nav menu by default on mobile */
+  .w-nav[data-collapse="medium"] .w-nav-menu {
+    display: none !important;
+  }
+  
+  /* Show nav menu when opened (w--open class added by Webflow JS) */
+  .w-nav[data-collapse="medium"] .w-nav-menu.w--open,
+  .nav_menu.w-nav-menu.w--open {
+    display: flex !important;
+    flex-direction: column;
+  }
+  
+  /* Ensure nav overlay is properly positioned and visible when open */
+  .w-nav-overlay {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    width: 100%;
+    display: none;
+  }
+  
+  .w-nav-overlay.w--open {
+    display: block !important;
+  }
+  
+  /* Ensure the menu in overlay is visible */
+  .w-nav-overlay .w-nav-menu {
+    display: flex !important;
+    flex-direction: column;
+  }
+}
+
+/* Ensure button is hidden on desktop (above 991px) */
+@media screen and (min-width: 992px) {
+  .w-nav-button,
+  .nav_button.w-nav-button {
+    display: none !important;
+  }
+  
+  .w-nav-menu {
+    display: flex !important;
+  }
+  
+  .w-nav-overlay {
+    display: none !important;
+  }
+}
