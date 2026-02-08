@@ -1,5 +1,5 @@
 /* Mobile Navigation Fix
- * Fixes hamburger menu visibility at tablet/mobile viewports
+ * Fixes hamburger menu visibility and overlay display at tablet/mobile viewports
  * for static Webflow export
  */
 
@@ -12,15 +12,72 @@
   }
   
   /* Hide desktop nav menu by default on mobile */
-  .w-nav[data-collapse="medium"] .w-nav-menu {
+  .w-nav[data-collapse="medium"] .w-nav-menu,
+  .nav_menu.w-nav-menu {
     display: none !important;
   }
   
-  /* Show nav menu when opened (w--open class added by Webflow JS) */
-  .w-nav[data-collapse="medium"] .w-nav-menu.w--open,
-  .nav_menu.w-nav-menu.w--open {
+  /* Show nav menu when opened - Webflow adds data-nav-menu-open attribute */
+  .w-nav[data-collapse="medium"] .w-nav-menu[data-nav-menu-open],
+  .nav_menu.w-nav-menu[data-nav-menu-open],
+  [data-nav-menu-open] {
     display: flex !important;
     flex-direction: column;
+    background-color: #f1f1f1;
+    border: 1px solid var(--color--grey200, #dedede);
+    border-radius: 8px;
+    padding: 1rem 1.75rem 1.5rem;
+    margin-top: 1rem;
+    margin-left: 2.5rem;
+    margin-right: 2.5rem;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 100;
+  }
+  
+  /* Style nav links when menu is open */
+  [data-nav-menu-open] .nav_link {
+    padding: 0.5rem 0;
+    display: block;
+  }
+  
+  /* Style dropdowns in mobile menu */
+  [data-nav-menu-open] .nav_dropdown {
+    display: block;
+    width: 100%;
+  }
+  
+  [data-nav-menu-open] .nav_toggle {
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    width: 100%;
+  }
+  
+  [data-nav-menu-open] .nav_dropdown-list {
+    position: static !important;
+    display: none;
+    padding: 0.25rem 0.75rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  [data-nav-menu-open] .nav_dropdown-list.w--open {
+    display: flex !important;
+    flex-direction: column;
+    gap: 1px;
+    background-color: var(--color--grey25, #f7f7f7);
+    border: 1px solid var(--color--grey200, #dedede);
+    border-radius: 8px;
+    padding: 0.75rem 0.25rem;
+  }
+  
+  /* Show the Request a Demo button in mobile menu */
+  [data-nav-menu-open] .nav_cta.hide-desktop {
+    display: inline-block !important;
+    width: 100%;
+    margin-top: 0.75rem;
   }
   
   /* Ensure nav overlay is properly positioned and visible when open */
@@ -29,19 +86,58 @@
     top: 100%;
     left: 0;
     right: 0;
-    overflow: hidden;
+    overflow: visible;
     width: 100%;
     display: none;
+    z-index: 100;
   }
   
   .w-nav-overlay.w--open {
     display: block !important;
   }
   
-  /* Ensure the menu in overlay is visible */
+  /* Style the menu inside overlay */
   .w-nav-overlay .w-nav-menu {
     display: flex !important;
     flex-direction: column;
+    background-color: #f1f1f1;
+    border: 1px solid var(--color--grey200, #dedede);
+    border-radius: 8px;
+    padding: 1rem 1.75rem 1.5rem;
+    margin: 1rem 2.5rem;
+  }
+}
+
+/* Smaller mobile adjustments */
+@media screen and (max-width: 767px) {
+  .w-nav[data-collapse="medium"] .w-nav-menu[data-nav-menu-open],
+  .nav_menu.w-nav-menu[data-nav-menu-open],
+  [data-nav-menu-open] {
+    margin-left: 1.25rem;
+    margin-right: 1.25rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  .w-nav-overlay .w-nav-menu {
+    margin-left: 1.25rem;
+    margin-right: 1.25rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .w-nav[data-collapse="medium"] .w-nav-menu[data-nav-menu-open],
+  .nav_menu.w-nav-menu[data-nav-menu-open],
+  [data-nav-menu-open] {
+    padding-left: 0.875rem;
+    padding-right: 0.875rem;
+  }
+  
+  .w-nav-overlay .w-nav-menu {
+    padding-left: 0.875rem;
+    padding-right: 0.875rem;
   }
 }
 
