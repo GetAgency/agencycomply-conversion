@@ -1,6 +1,8 @@
 /* Mobile Navigation Fix
  * Fixes hamburger menu visibility and overlay display at tablet/mobile viewports
  * for static Webflow export
+ * 
+ * v2: Uses fixed positioning to avoid Webflow overlay positioning issues
  */
 
 /* Show hamburger button at tablet and below (991px) */
@@ -17,45 +19,49 @@
     display: none !important;
   }
   
-  /* Show nav menu when opened - Webflow adds data-nav-menu-open attribute */
+  /* Show nav menu when opened - using data attribute */
   .w-nav[data-collapse="medium"] .w-nav-menu[data-nav-menu-open],
   .nav_menu.w-nav-menu[data-nav-menu-open],
-  [data-nav-menu-open] {
+  .w-nav-menu[data-nav-menu-open] {
     display: flex !important;
     flex-direction: column;
     background-color: #f1f1f1;
     border: 1px solid var(--color--grey200, #dedede);
     border-radius: 8px;
     padding: 1rem 1.75rem 1.5rem;
-    margin-top: 1rem;
-    margin-left: 2.5rem;
-    margin-right: 2.5rem;
-    position: absolute;
-    top: 100%;
+    /* Fixed positioning is handled by JS, but provide fallback */
+    position: fixed !important;
     left: 0;
     right: 0;
-    z-index: 100;
+    margin: 0 1.25rem;
+    z-index: 1000 !important;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
   }
   
   /* Style nav links when menu is open */
-  [data-nav-menu-open] .nav_link {
+  [data-nav-menu-open] .nav_link,
+  [data-nav-menu-open] .w-nav-link {
     padding: 0.5rem 0;
     display: block;
   }
   
   /* Style dropdowns in mobile menu */
-  [data-nav-menu-open] .nav_dropdown {
+  [data-nav-menu-open] .nav_dropdown,
+  [data-nav-menu-open] .w-dropdown {
     display: block;
     width: 100%;
   }
   
-  [data-nav-menu-open] .nav_toggle {
+  [data-nav-menu-open] .nav_toggle,
+  [data-nav-menu-open] .w-dropdown-toggle {
     justify-content: space-between;
     padding: 0.5rem 0;
     width: 100%;
   }
   
-  [data-nav-menu-open] .nav_dropdown-list {
+  [data-nav-menu-open] .nav_dropdown-list,
+  [data-nav-menu-open] .w-dropdown-list {
     position: static !important;
     display: none;
     padding: 0.25rem 0.75rem;
@@ -63,7 +69,8 @@
     margin-bottom: 0.25rem;
   }
   
-  [data-nav-menu-open] .nav_dropdown-list.w--open {
+  [data-nav-menu-open] .nav_dropdown-list.w--open,
+  [data-nav-menu-open] .w-dropdown-list.w--open {
     display: flex !important;
     flex-direction: column;
     gap: 1px;
@@ -80,7 +87,8 @@
     margin-top: 0.75rem;
   }
   
-  /* Ensure nav overlay is properly positioned and visible when open */
+  /* Handle the Webflow overlay - make it invisible but don't hide it
+   * The menu is inside the overlay, so we can't use display:none */
   .w-nav-overlay {
     position: absolute;
     top: 100%;
@@ -88,23 +96,17 @@
     right: 0;
     overflow: visible;
     width: 100%;
-    display: none;
+    /* Don't hide the overlay since menu is inside it */
+    display: block !important;
+    height: 0 !important;
+    pointer-events: none;
     z-index: 100;
   }
   
-  .w-nav-overlay.w--open {
-    display: block !important;
-  }
-  
-  /* Style the menu inside overlay */
-  .w-nav-overlay .w-nav-menu {
-    display: flex !important;
-    flex-direction: column;
-    background-color: #f1f1f1;
-    border: 1px solid var(--color--grey200, #dedede);
-    border-radius: 8px;
-    padding: 1rem 1.75rem 1.5rem;
-    margin: 1rem 2.5rem;
+  /* The menu inside the overlay should capture pointer events */
+  .w-nav-overlay .w-nav-menu,
+  .w-nav-overlay .nav_menu {
+    pointer-events: auto;
   }
 }
 
@@ -112,14 +114,7 @@
 @media screen and (max-width: 767px) {
   .w-nav[data-collapse="medium"] .w-nav-menu[data-nav-menu-open],
   .nav_menu.w-nav-menu[data-nav-menu-open],
-  [data-nav-menu-open] {
-    margin-left: 1.25rem;
-    margin-right: 1.25rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-  }
-  
-  .w-nav-overlay .w-nav-menu {
+  .w-nav-menu[data-nav-menu-open] {
     margin-left: 1.25rem;
     margin-right: 1.25rem;
     padding-left: 1.5rem;
@@ -130,14 +125,11 @@
 @media screen and (max-width: 479px) {
   .w-nav[data-collapse="medium"] .w-nav-menu[data-nav-menu-open],
   .nav_menu.w-nav-menu[data-nav-menu-open],
-  [data-nav-menu-open] {
+  .w-nav-menu[data-nav-menu-open] {
     padding-left: 0.875rem;
     padding-right: 0.875rem;
-  }
-  
-  .w-nav-overlay .w-nav-menu {
-    padding-left: 0.875rem;
-    padding-right: 0.875rem;
+    margin-left: 0.875rem;
+    margin-right: 0.875rem;
   }
 }
 
@@ -148,7 +140,8 @@
     display: none !important;
   }
   
-  .w-nav-menu {
+  .w-nav-menu,
+  .nav_menu.w-nav-menu {
     display: flex !important;
   }
   
